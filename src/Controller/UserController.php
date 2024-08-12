@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,12 +16,15 @@ class UserController extends AbstractController
     public function __construct(
         private EntityManagerInterface $em,
         private UserPasswordHasherInterface $userPasswordHasher,
+        private UserService $userService,
     ){}
 
     #[Route("/users", name: "user_list")]
     public function listAction()
     {
-        return $this->render('user/list.html.twig', ['users' => $this->em->getRepository(User::class)->findAll()]);
+        $users = $this->em->getRepository(User::class)->findAll();
+
+        return $this->render('user/list.html.twig', ['users' => $users]);
     }
 
     #[Route("/users/create", name: "user_create")]
@@ -30,12 +34,10 @@ class UserController extends AbstractController
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
-
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword($this->userPasswordHasher->hashPassword($user, $user->getPassword()));
 
-            $this->em->persist($user);
-            $this->em->flush();
+            $this->userService->save($user);
 
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
 
@@ -51,11 +53,10 @@ class UserController extends AbstractController
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
-
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword($this->userPasswordHasher->hashPassword($user, $user->getPassword()));
 
-            $this->em->flush();
+            $this->userService->save($user);
 
             $this->addFlash('success', "L'utilisateur a bien été modifié");
 
