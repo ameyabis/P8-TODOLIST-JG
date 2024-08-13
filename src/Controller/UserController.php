@@ -38,7 +38,7 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword($this->userPasswordHasher->hashPassword($user, $user->getPassword()));
 
-            $this->userService->save($user);
+            $this->em->getRepository(User::class)->saveUser($user);
 
             $this->addFlash('success', 'L\'utilisateur a bien été ajouté.');
 
@@ -57,7 +57,7 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword($this->userPasswordHasher->hashPassword($user, $user->getPassword()));
 
-            $this->userService->save($user);
+            $this->em->getRepository(User::class)->saveUser($user);
 
             $this->addFlash('success', 'L\'utilisateur a bien été modifié');
 
