@@ -17,7 +17,8 @@ class UserController extends AbstractController
         private EntityManagerInterface $em,
         private UserPasswordHasherInterface $userPasswordHasher,
         private UserService $userService,
-    ){}
+    ) {
+    }
 
     #[Route('/users', name: 'user_list')]
     public function listAction()

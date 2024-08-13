@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\TaskRepository;
@@ -17,7 +16,7 @@ class Task
     private int $id;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private DateTimeInterface $createdAt;
+    private \DateTimeInterface $createdAt;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Vous devez saisir un titre.')]
@@ -32,7 +31,7 @@ class Task
 
     public function __construct()
     {
-        $this->createdAt = new \Datetime();
+        $this->createdAt = new \DateTime();
         $this->isDone = false;
     }
 
@@ -41,12 +40,19 @@ class Task
         return $this->id;
     }
 
-    public function getCreatedAt(): DateTimeInterface
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeInterface $createdAt): static
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
 
