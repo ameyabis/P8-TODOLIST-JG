@@ -30,7 +30,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email(message: 'Le format de l\'adresse n\'est pas correcte.')]
     private string $email;
 
-    #[ORM\Column(type: 'array')]
+    #[ORM\Column(type: 'json')]
     private array $roles = [];
 
     public function getId(): int
@@ -58,11 +58,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return (string) $this->username;
-    }
-
-    public function getSalt(): string
-    {
-        return null;
     }
 
     public function getPassword(): string
