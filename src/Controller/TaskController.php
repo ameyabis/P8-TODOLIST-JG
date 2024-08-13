@@ -15,7 +15,8 @@ class TaskController extends AbstractController
     public function __construct(
         private EntityManagerInterface $em,
         private TaskService $taskService,
-    ){}
+    ) {
+    }
 
     #[Route('/tasks', name: 'task_list')]
     public function listAction()

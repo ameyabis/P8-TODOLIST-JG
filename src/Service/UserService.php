@@ -9,8 +9,8 @@ class UserService
 {
     public function __construct(
         private EntityManagerInterface $em,
-        
-    ){}
+    ) {
+    }
 
     public function save(User $user): void
     {
