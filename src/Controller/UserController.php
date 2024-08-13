@@ -19,7 +19,7 @@ class UserController extends AbstractController
         private UserService $userService,
     ){}
 
-    #[Route("/users", name: "user_list")]
+    #[Route('/users', name: 'user_list')]
     public function listAction()
     {
         $users = $this->em->getRepository(User::class)->findAll();
@@ -27,7 +27,7 @@ class UserController extends AbstractController
         return $this->render('user/list.html.twig', ['users' => $users]);
     }
 
-    #[Route("/users/create", name: "user_create")]
+    #[Route('/users/create', name: 'user_create')]
     public function createAction(Request $request)
     {
         $user = new User();
@@ -39,7 +39,7 @@ class UserController extends AbstractController
 
             $this->userService->save($user);
 
-            $this->addFlash('success', "L'utilisateur a bien été ajouté.");
+            $this->addFlash('success', 'L\'utilisateur a bien été ajouté.');
 
             return $this->redirectToRoute('user_list');
         }
@@ -47,7 +47,7 @@ class UserController extends AbstractController
         return $this->render('user/create.html.twig', ['form' => $form->createView()]);
     }
 
-    #[Route("/users/{id}/edit", name: "user_edit")]
+    #[Route('/users/{id}/edit', name: 'user_edit')]
     public function editAction(User $user, Request $request)
     {
         $form = $this->createForm(UserType::class, $user);
@@ -58,7 +58,7 @@ class UserController extends AbstractController
 
             $this->userService->save($user);
 
-            $this->addFlash('success', "L'utilisateur a bien été modifié");
+            $this->addFlash('success', 'L\'utilisateur a bien été modifié');
 
             return $this->redirectToRoute('user_list');
         }
