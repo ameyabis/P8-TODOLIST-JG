@@ -16,6 +16,7 @@
 /web/bundles/
 /first_audit
 /.php-cs-fixer.dist.php
+/.php-cs-fixer.cache
 
 ###> symfony/framework-bundle ###
 /.env.local
