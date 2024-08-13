@@ -11,10 +11,4 @@ class UserService
         private EntityManagerInterface $em,
     ) {
     }
-
-    public function save(User $user): void
-    {
-        $this->em->persist($user);
-        $this->em->flush();
-    }
 }
