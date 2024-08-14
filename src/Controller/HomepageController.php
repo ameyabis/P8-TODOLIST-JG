@@ -6,11 +6,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class DefaultController extends AbstractController
+class HomepageController extends AbstractController
 {
     #[Route(path: '/', name: 'homepage')]
-    public function indexAction(): Response
+    public function showHomepage(): Response
     {
-        return $this->render('default/index.html.twig');
+        return $this->render('homepage/index.html.twig');
     }
 }

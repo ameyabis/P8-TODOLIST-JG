@@ -22,7 +22,7 @@ class TaskController extends AbstractController
     }
 
     #[Route(path: '/tasks', name: 'task_list')]
-    public function listAction(): Response
+    public function listTasks(): Response
     {
         $task = $this->em->getRepository(Task::class)->findAll();
 
@@ -30,7 +30,7 @@ class TaskController extends AbstractController
     }
 
     #[Route(path: '/tasks/create', name: 'task_create')]
-    public function createAction(
+    public function createTask(
         Request $request,
         #[CurrentUser] ?User $currentUser,
     ): Response {
@@ -51,7 +51,7 @@ class TaskController extends AbstractController
     }
 
     #[Route(path: '/tasks/{id}/edit', name: 'task_edit')]
-    public function editAction(Task $task, Request $request): Response
+    public function editTask(Task $task, Request $request): Response
     {
         $form = $this->createForm(TaskType::class, $task);
 
@@ -71,7 +71,7 @@ class TaskController extends AbstractController
     }
 
     #[Route(path: '/tasks/{id}/toggle', name: 'task_toggle')]
-    public function toggleTaskAction(Task $task): Response
+    public function toggleTask(Task $task): Response
     {
         $task->toggle(!$task->isDone());
         $this->taskService->save($task);
@@ -82,7 +82,7 @@ class TaskController extends AbstractController
     }
 
     #[Route(path: '/tasks/{id}/delete', name: 'task_delete')]
-    public function deleteTaskAction(
+    public function deleteTask(
         Task $task,
         #[CurrentUser] ?User $currentUser,
     ): Response {
