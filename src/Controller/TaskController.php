@@ -86,7 +86,7 @@ class TaskController extends AbstractController
         Task $task,
         #[CurrentUser] ?User $currentUser,
     ): Response {
-        if ($currentUser === $task->getUser() || ($task->getUser() === null && $this->isGranted('ROLE_ADMIN'))) {
+        if ($currentUser === $task->getUser() || (null === $task->getUser() && $this->isGranted('ROLE_ADMIN'))) {
             $this->taskService->remove($task);
 
             $this->addFlash('success', 'La tâche a bien été supprimée.');
