@@ -22,7 +22,7 @@ class TaskController extends AbstractController
     }
 
     #[Route(path: '/tasks', name: 'task_list')]
-    public function listAction()
+    public function listAction(): Response
     {
         $task = $this->em->getRepository(Task::class)->findAll();
 
@@ -40,7 +40,7 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $task->setUser($currentUser);
-            $this->em->getRepository(Task::class)->saveTask($task);
+            $this->taskService->save($task);
 
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
 
@@ -57,7 +57,7 @@ class TaskController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->em->getRepository(Task::class)->saveTask($task);
+            $this->taskService->save($task);
 
             $this->addFlash('success', 'La tâche a bien été modifiée.');
 
@@ -74,7 +74,7 @@ class TaskController extends AbstractController
     public function toggleTaskAction(Task $task): Response
     {
         $task->toggle(!$task->isDone());
-        $this->em->getRepository(Task::class)->saveTask($task);
+        $this->taskService->save($task);
 
         $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
 
@@ -82,11 +82,15 @@ class TaskController extends AbstractController
     }
 
     #[Route(path: '/tasks/{id}/delete', name: 'task_delete')]
-    public function deleteTaskAction(Task $task): Response
-    {
-        $this->em->getRepository(Task::class)->removeTask($task);
+    public function deleteTaskAction(
+        Task $task,
+        #[CurrentUser] ?User $currentUser,
+    ): Response {
+        if ($currentUser === $task->getUser() || (null === $task->getUser() && $this->isGranted('ROLE_ADMIN'))) {
+            $this->taskService->remove($task);
 
-        $this->addFlash('success', 'La tâche a bien été supprimée.');
+            $this->addFlash('success', 'La tâche a bien été supprimée.');
+        }
 
         return $this->redirectToRoute('task_list');
     }
