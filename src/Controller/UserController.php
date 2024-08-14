@@ -7,9 +7,10 @@ use App\Form\UserType;
 use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Attribute\Route;
 
 class UserController extends AbstractController
 {
@@ -20,6 +21,7 @@ class UserController extends AbstractController
     ) {
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route(path: '/users', name: 'user_list')]
     public function listAction()
     {
@@ -28,6 +30,7 @@ class UserController extends AbstractController
         return $this->render('user/list.html.twig', ['users' => $users]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route(path: '/users/create', name: 'user_create')]
     public function createAction(Request $request)
     {
@@ -48,6 +51,7 @@ class UserController extends AbstractController
         return $this->render('user/create.html.twig', ['form' => $form->createView()]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route(path: '/users/{id}/edit', name: 'user_edit')]
     public function editAction(User $user, Request $request)
     {
