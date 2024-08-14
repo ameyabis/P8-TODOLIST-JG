@@ -22,7 +22,7 @@ class TaskController extends AbstractController
     }
 
     #[Route(path: '/tasks', name: 'task_list')]
-    public function listAction()
+    public function listAction(): Response
     {
         $task = $this->em->getRepository(Task::class)->findAll();
 
@@ -86,7 +86,7 @@ class TaskController extends AbstractController
         Task $task,
         #[CurrentUser] ?User $currentUser,
     ): Response {
-        if ($currentUser === $task->getUser()) {
+        if ($currentUser === $task->getUser() || ($task->getUser() === null && $this->isGranted('ROLE_ADMIN'))) {
             $this->taskService->remove($task);
 
             $this->addFlash('success', 'La tâche a bien été supprimée.');
