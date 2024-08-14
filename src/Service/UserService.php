@@ -17,4 +17,9 @@ class UserService
         $this->em->persist($user);
         $this->em->flush();
     }
+
+    public function getUsers(): array
+    {
+        return $this->em->getRepository(User::class)->findAll();
+    }
 }

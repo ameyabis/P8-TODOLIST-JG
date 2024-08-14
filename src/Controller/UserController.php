@@ -24,7 +24,7 @@ class UserController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route(path: '/users', name: 'user_list')]
-    public function listAction(): Response
+    public function listUser(): Response
     {
         $users = $this->em->getRepository(User::class)->findAll();
 
@@ -33,7 +33,7 @@ class UserController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route(path: '/users/create', name: 'user_create')]
-    public function createAction(Request $request): Response
+    public function createUser(Request $request): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -54,7 +54,7 @@ class UserController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route(path: '/users/{id}/edit', name: 'user_edit')]
-    public function editAction(User $user, Request $request): Response
+    public function editUser(User $user, Request $request): Response
     {
         $form = $this->createForm(UserType::class, $user);
 
