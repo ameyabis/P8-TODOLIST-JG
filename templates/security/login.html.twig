@@ -9,8 +9,8 @@
     <label class="form-label" for="username">Nom d'utilisateur :</label>
     <input class="form-control" type="text" id="username" name="_username" value="{{ last_username }}" />
 
-    <label for="password">Mot de passe :</label>
-    <input type="password" id="password" name="_password" />
+    <label class="form-label" for="password">Mot de passe :</label>
+    <input class="form-control" type="password" id="password" name="_password" />
     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
     <button class="btn btn-success" type="submit">Se connecter</button>
