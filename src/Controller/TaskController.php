@@ -82,11 +82,15 @@ class TaskController extends AbstractController
     }
 
     #[Route(path: '/tasks/{id}/delete', name: 'task_delete')]
-    public function deleteTaskAction(Task $task): Response
-    {
-        $this->em->getRepository(Task::class)->removeTask($task);
+    public function deleteTaskAction(
+        Task $task,
+        #[CurrentUser] ?User $currentUser,
+    ): Response {
+        if ($currentUser === $task->getUser()) {
+            $this->em->getRepository(Task::class)->removeTask($task);
 
-        $this->addFlash('success', 'La tâche a bien été supprimée.');
+            $this->addFlash('success', 'La tâche a bien été supprimée.');
+        }
 
         return $this->redirectToRoute('task_list');
     }
