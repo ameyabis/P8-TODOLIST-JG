@@ -40,7 +40,7 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $task->setUser($currentUser);
-            $this->em->getRepository(Task::class)->saveTask($task);
+            $this->taskService->save($task);
 
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
 
@@ -57,7 +57,7 @@ class TaskController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->em->getRepository(Task::class)->saveTask($task);
+            $this->taskService->save($task);
 
             $this->addFlash('success', 'La tâche a bien été modifiée.');
 
@@ -74,7 +74,7 @@ class TaskController extends AbstractController
     public function toggleTaskAction(Task $task): Response
     {
         $task->toggle(!$task->isDone());
-        $this->em->getRepository(Task::class)->saveTask($task);
+        $this->taskService->save($task);
 
         $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
 
@@ -87,7 +87,7 @@ class TaskController extends AbstractController
         #[CurrentUser] ?User $currentUser,
     ): Response {
         if ($currentUser === $task->getUser()) {
-            $this->em->getRepository(Task::class)->removeTask($task);
+            $this->taskService->remove($task);
 
             $this->addFlash('success', 'La tâche a bien été supprimée.');
         }

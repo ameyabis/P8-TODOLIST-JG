@@ -11,4 +11,16 @@ class TaskService
         private EntityManagerInterface $em,
     ) {
     }
+
+    public function save(Task $task): void
+    {
+        $this->em->persist($task);
+        $this->em->flush();
+    }
+
+    public function remove(Task $task): void
+    {
+        $this->em->remove($task);
+        $this->em->flush();
+    }
 }
