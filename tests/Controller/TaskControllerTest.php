@@ -16,18 +16,19 @@ class TaskControllerTest extends WebTestCase
     private KernelBrowser $client;
     private Router $urlGenerator;
     private EntityManagerInterface $em;
+    private User $user;
 
     public function setUp(): void
     {
         $this->client = self::createClient();
         $this->urlGenerator = $this->client->getContainer()->get('router.default');
         $this->em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+        $this->user = $this->em->find(User::class, 1);
     }
 
     public function testShowTaskPage(): void
     {
-        $user = $this->em->find(User::class, 1);
-        $this->client->loginUser($user);
+        $this->client->loginUser($this->user);
 
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_list'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
@@ -35,8 +36,7 @@ class TaskControllerTest extends WebTestCase
 
     public function testCreateTask(): void
     {
-        $user = $this->em->find(User::class, 1);
-        $this->client->loginUser($user);
+        $this->client->loginUser($this->user);
 
         $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_create'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
@@ -58,12 +58,9 @@ class TaskControllerTest extends WebTestCase
 
     public function testUpdateTask(): void
     {
-        $user = $this->em->find(User::class, 1);
-        $this->client->loginUser($user);
+        $this->client->loginUser($this->user);
 
-        $task = $this->em->getRepository(Task::class)->findOneBy([
-            'id' => 1,
-        ]);
+        $task = $this->em->getRepository(Task::class)->findOneBy([]);
 
         $crawler = $this->client->request(
             Request::METHOD_GET,
@@ -90,14 +87,11 @@ class TaskControllerTest extends WebTestCase
 
     public function testRemoveTask(): void
     {
-        $user = $this->em->find(User::class, 1);
-        $this->client->loginUser($user);
+        $this->client->loginUser($this->user);
 
-        $task = $this->em->getRepository(Task::class)->findOneBy([
-            'id' => 2,
-        ]);
+        $task = $this->em->getRepository(Task::class)->findOneBy([]);
         
-        $crawler = $this->client->request(
+        $this->client->request(
             Request::METHOD_GET,
             $this->urlGenerator->generate('task_delete', ['id' => $task->getId()])
         );
@@ -109,5 +103,41 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorTextContains('div.alert-success', 'Superbe ! La tâche a bien été supprimée.');
 
         $this->assertRouteSame('task_list');
+    }
+
+    public function testToggleTaskToDone(): void
+    {
+        $this->client->loginUser($this->user);
+
+        $task = $this->em->getRepository(Task::class)->findOneBy([
+            'isDone' => false
+        ]);
+
+        $this->client->request(
+            Request::METHOD_GET,
+            $this->urlGenerator->generate('task_toggle', ['id' => $task->getId()])
+        );
+
+        $this->client->followRedirect();
+
+        $this->assertSelectorTextContains('div.alert', 'Superbe ! La tâche ' . $task->getTitle() . ' a bien été marquée comme faite.');
+    }
+
+    public function testToggleTaskToNotDone(): void
+    {
+        $this->client->loginUser($this->user);
+
+        $task = $this->em->getRepository(Task::class)->findOneBy([
+            'isDone' => true
+        ]);
+
+        $this->client->request(
+            Request::METHOD_GET,
+            $this->urlGenerator->generate('task_toggle', ['id' => $task->getId()])
+        );
+
+        $this->client->followRedirect();
+
+        $this->assertSelectorTextContains('div.alert', 'Superbe ! La tâche ' . $task->getTitle() . ' a bien été marquée comme à faire.');
     }
 }
