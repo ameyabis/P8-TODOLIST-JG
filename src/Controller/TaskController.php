@@ -22,9 +22,11 @@ class TaskController extends AbstractController
     }
 
     #[Route(path: '/tasks', name: 'task_list')]
-    public function listTasks(): Response
+    public function listTasks(Request $request): Response
     {
-        $task = $this->em->getRepository(Task::class)->findAll();
+        $done = $request->query->get('done');
+
+        $task = $this->em->getRepository(Task::class)->findBy(['isDone' => $done]);
 
         return $this->render('task/list.html.twig', ['tasks' => $task]);
     }
@@ -79,7 +81,7 @@ class TaskController extends AbstractController
         $message = $task->isDone() ? 'faite' : 'à faire';
         $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme %s.', $task->getTitle(), $message));
 
-        return $this->redirectToRoute('task_list');
+        return $this->redirectToRoute('task_list', ['done' => !$task->isDone()]);
     }
 
     #[Route(path: '/tasks/{id}/delete', name: 'task_delete')]
