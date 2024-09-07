@@ -1,18 +1,42 @@
 <?php
 
-namespace Tests\App\Controller;
+namespace App\Tests\Controller;
 
+use App\Entity\User;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class HomepageControllerTest extends WebTestCase
 {
-    // public function testIndex()
-    // {
-    //     $client = static::createClient();
+    private KernelBrowser $client;
+    private Router $urlGenerator;
 
-    //     $crawler = $client->request('GET', '/');
+    public function setUp(): void
+    {
+        $this->client = self::createClient();
+        $this->urlGenerator = $this->client->getContainer()->get('router.default');
+    }
 
-    //     $this->assertEquals(200, $client->getResponse()->getStatusCode());
-    //     $this->assertContains('Welcome to Symfony', $crawler->filter('#container h1')->text());
-    // }
+    public function testShowHomePageRedirectNoConnect(): void
+    {
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('homepage'));
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+    }
+
+    public function testShowHomePageConnected(): void
+    {
+        $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+
+        $user = $em->find(User::class, 1);
+        $this->client->loginUser($user);
+
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('homepage'));
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertSelectorTextContains('h1', 'Bienvenue sur Todo List, l\'application vous permettant de gérer l\'ensemble de vos tâches sans effort !');
+    }
 }
