@@ -5,35 +5,35 @@
 {% endblock %}
 
 {% block body %}
-<div class="row">
-    <div class="w-100">
-        <a href="{{ path('task_create') }}" class="btn btn-info pull-right">Créer une tâche</a>
-    </div>
+<div class="d-flex justify-content-end">
+    <a href="{{ path('task_create') }}" class="mb-4 btn btn-info pull-right">Créer une tâche</a>
+</div>
+<div class="d-flex flex-wrap">
     {% for task in tasks %}
     <div class="col-sm-4 col-lg-4 col-md-4">
-        <div class="thumbnail">
-            <div class="caption">
-                <h4 class="pull-right">
+        <div class="m-1 card">
+            <div class="card-body">
+                <h4 class="d-flex">
+                    <a class="p-1 card-title text-decoration-none" href="{{ path('task_edit', {'id' : task.id }) }}">{{ task.title }}</a>
                     {% if task.isDone %}
-                    <span class="glyphicon glyphicon-ok"></span>
+                    <i class="ms-auto fa-solid fa-check"></i>
                     {% else %}
-                    <span class="glyphicon glyphicon-remove"></span>
+                    <i class="ms-auto fa-solid fa-xmark"></i>
                     {% endif %}
                 </h4>
-                <h4><a href="{{ path('task_edit', {'id' : task.id }) }}">{{ task.title }}</a></h4>
                 <p>{{ task.content }}</p>
-            </div>
-            <div>
-                <form action="{{ path('task_toggle', {'id' : task.id }) }}" name="toggle-task">
-                    <button class="btn btn-success btn-sm pull-right">
-                        {% if not task.isDone %}Marquer comme faite{% else %}Marquer non terminée{% endif %}
-                    </button>
-                </form>
-                {% if app.user == task.user or (task.user == null and is_granted('ROLE_ADMIN'))%}
-                <form action="{{ path('task_delete', {'id' : task.id }) }}">
-                    <button class="btn btn-danger btn-sm pull-right">Supprimer</button>
-                </form>
-                {% endif %}
+                <div class="d-flex justify-content-end">
+                    <form action="{{ path('task_toggle', {'id' : task.id }) }}" name="toggle-task">
+                        <button class="mx-1 btn btn-success btn-sm pull-right">
+                            {% if not task.isDone %}Marquer comme faite{% else %}Marquer non terminée{% endif %}
+                        </button>
+                    </form>
+                    {% if app.user == task.user or (task.user == null and is_granted('ROLE_ADMIN'))%}
+                    <form action="{{ path('task_delete', {'id' : task.id }) }}">
+                        <button class="mx-1 btn btn-danger btn-sm pull-right">Supprimer</button>
+                    </form>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

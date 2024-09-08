@@ -6,12 +6,12 @@
 
 {% block body %}
 
-<div class="row">
-    <a href="{{ path('task_create') }}" class="btn btn-success">Créer une nouvelle tâche</a>
-    <a href="{{ path('task_list', { 'done': false }) }}" class="btn btn-info">Consulter la liste des tâches à faire</a>
-    <a href="{{ path('task_list', { 'done': true }) }}" class="btn btn-secondary">Consulter la liste des tâches terminées</a>
+<div class="d-flex">
+    <a href="{{ path('task_create') }}" class="mx-1 btn btn-success">Créer une nouvelle tâche</a>
+    <a href="{{ path('task_list', { 'done': false }) }}" class="mx-1 btn btn-primary">Consulter la liste des tâches à faire</a>
+    <a href="{{ path('task_list', { 'done': true }) }}" class="mx-1 btn btn-secondary">Consulter la liste des tâches terminées</a>
     {% if is_granted('ROLE_ADMIN') %}
-    <a href="{{ path('user_list') }}" class="pull-right btn btn-info">Consulter la liste des utilisateurs</a>
+    <a href="{{ path('user_list') }}" class="ms-auto mx-1 btn btn-primary">Consulter la liste des utilisateurs</a>
     {% endif %}
 </div>
 {% endblock %}

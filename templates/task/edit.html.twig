@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="row">
-        {{ form_start(form, {'action' : path('task_edit', { 'id' : task.id })}) }}
-            {{ form_widget(form) }}
+<div class="d-flex flex-column align-items-center">
+    {{ form_start(form, {'action': path('task_edit', { 'id' : task.id }), 'attr': {'class': 'col-6'}}) }}
+    {{ form_widget(form) }}
 
-            <button type="submit" class="btn btn-success pull-right">Modifier</button>
-        {{ form_end(form) }}
-    </div>
+    <button type="submit" class="btn btn-success">Modifier</button>
+    {{ form_end(form) }}
+</div>
 {% endblock %}
