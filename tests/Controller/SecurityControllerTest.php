@@ -25,7 +25,7 @@ class SecurityControllerTest extends WebTestCase
 
         $form = $crawler->filter('form[name=login]')->form([
             '_username' => 'user',
-            '_password' => 'test'
+            '_password' => 'test',
         ]);
 
         $this->client->submit($form);
@@ -43,7 +43,7 @@ class SecurityControllerTest extends WebTestCase
 
         $form = $crawler->filter('form[name=login]')->form([
             '_username' => 'ame',
-            '_password' => 'password'
+            '_password' => 'password',
         ]);
 
         $this->client->submit($form);

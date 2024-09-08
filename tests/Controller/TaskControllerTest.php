@@ -43,7 +43,7 @@ class TaskControllerTest extends WebTestCase
 
         $form = $crawler->filter('form[name=task]')->form([
             'task[title]' => 'Une nouvelle tache',
-            'task[content]' => 'Voici se qu\'il y a à faire pour vendredi'
+            'task[content]' => 'Voici se qu\'il y a à faire pour vendredi',
         ]);
 
         $this->client->submit($form);
@@ -71,7 +71,7 @@ class TaskControllerTest extends WebTestCase
 
         $form = $crawler->filter('form[name=task]')->form([
             'task[title]' => 'Une nouvelle tache',
-            'task[content]' => 'Voici se qu\'il y a à faire pour Lundi'
+            'task[content]' => 'Voici se qu\'il y a à faire pour Lundi',
         ]);
 
         $this->client->submit($form);
@@ -90,7 +90,7 @@ class TaskControllerTest extends WebTestCase
         $this->client->loginUser($this->user);
 
         $task = $this->em->getRepository(Task::class)->findOneBy([]);
-        
+
         $this->client->request(
             Request::METHOD_GET,
             $this->urlGenerator->generate('task_delete', ['id' => $task->getId()])
@@ -110,7 +110,7 @@ class TaskControllerTest extends WebTestCase
         $this->client->loginUser($this->user);
 
         $task = $this->em->getRepository(Task::class)->findOneBy([
-            'isDone' => false
+            'isDone' => false,
         ]);
 
         $this->client->request(
@@ -120,7 +120,7 @@ class TaskControllerTest extends WebTestCase
 
         $this->client->followRedirect();
 
-        $this->assertSelectorTextContains('div.alert', 'Superbe ! La tâche ' . $task->getTitle() . ' a bien été marquée comme faite.');
+        $this->assertSelectorTextContains('div.alert', 'Superbe ! La tâche '.$task->getTitle().' a bien été marquée comme faite.');
     }
 
     public function testToggleTaskToNotDone(): void
@@ -128,7 +128,7 @@ class TaskControllerTest extends WebTestCase
         $this->client->loginUser($this->user);
 
         $task = $this->em->getRepository(Task::class)->findOneBy([
-            'isDone' => true
+            'isDone' => true,
         ]);
 
         $this->client->request(
@@ -138,6 +138,6 @@ class TaskControllerTest extends WebTestCase
 
         $this->client->followRedirect();
 
-        $this->assertSelectorTextContains('div.alert', 'Superbe ! La tâche ' . $task->getTitle() . ' a bien été marquée comme à faire.');
+        $this->assertSelectorTextContains('div.alert', 'Superbe ! La tâche '.$task->getTitle().' a bien été marquée comme à faire.');
     }
 }

@@ -24,11 +24,8 @@ class UserControllerTest extends WebTestCase
     }
 
     /**
-     * 
-     * Test list users
-     * 
+     * Test list users.
      */
-
     public function testListUsersNotConnected(): void
     {
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_list'));
@@ -60,11 +57,8 @@ class UserControllerTest extends WebTestCase
     }
 
     /**
-     * 
-     * Test create user
-     * 
+     * Test create user.
      */
-
     public function testCreateUserNotConnected(): void
     {
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_create'));
@@ -119,11 +113,8 @@ class UserControllerTest extends WebTestCase
     }
 
     /**
-     * 
-     * Test edit user
-     * 
+     * Test edit user.
      */
-
     public function testEditUser(): void
     {
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_create'));
@@ -145,6 +136,13 @@ class UserControllerTest extends WebTestCase
 
     public function testEditUserConnectedAdminRole(): void
     {
+        $user = $this->client->getContainer()->get('doctrine')->getRepository(User::class)->findOneBy(
+            ['username' => 'testEdit']
+        );
+        if ($user) {
+            $this->client->getContainer()->get('doctrine')->getManager()->remove($user);
+            $this->client->getContainer()->get('doctrine')->getManager()->flush();
+        }
         // User is an admin
         $admin = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
         $this->client->loginUser($admin);

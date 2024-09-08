@@ -11,7 +11,7 @@ class UserTest extends KernelTestCase
     {
         return (new User())
             ->setUsername('test')
-            //password, encrypter
+            // password, encrypter
             ->setPassword('')
             ->setRoles([])
             ->setEmail('test@test.fr');
