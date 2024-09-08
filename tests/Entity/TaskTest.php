@@ -19,7 +19,7 @@ class TaskTest extends KernelTestCase
     public function testEntityIsValid(): void
     {
         self::bootKernel();
-        $container = static::getContainer();
+        $container = self::getContainer();
 
         $task = $this->getEntity();
 
@@ -31,7 +31,7 @@ class TaskTest extends KernelTestCase
     public function testInvalidTitle(): void
     {
         self::bootKernel();
-        $container = static::getContainer();
+        $container = self::getContainer();
 
         $task = $this->getEntity();
         $task->setTitle('');
@@ -44,7 +44,7 @@ class TaskTest extends KernelTestCase
     public function testInvalidContent(): void
     {
         self::bootKernel();
-        $container = static::getContainer();
+        $container = self::getContainer();
 
         $task = $this->getEntity();
         $task->setContent('');
