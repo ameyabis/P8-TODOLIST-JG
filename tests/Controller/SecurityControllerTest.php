@@ -24,7 +24,7 @@ class SecurityControllerTest extends WebTestCase
         $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('app_login'));
 
         $form = $crawler->filter('form[name=login]')->form([
-            '_username' => 'ame',
+            '_username' => 'user',
             '_password' => 'test'
         ]);
 

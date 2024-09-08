@@ -64,7 +64,7 @@ class UserController extends AbstractController
 
             $this->userService->save($user);
 
-            $this->addFlash('success', 'L\'utilisateur a bien été modifié');
+            $this->addFlash('success', 'L\'utilisateur a bien été modifié.');
 
             return $this->redirectToRoute('user_list');
         }
