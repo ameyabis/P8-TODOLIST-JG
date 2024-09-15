@@ -21,7 +21,7 @@ class UserController extends AbstractController
     }
 
     #[IsGranted('ROLE_ADMIN')]
-    #[Route(path: '/users', name: 'user_list')]
+    #[Route(path: '/users', name: 'user_list', methods: ['GET'])]
     public function listUser(): Response
     {
         $users = $this->em->getRepository(User::class)->findAll();
@@ -29,7 +29,7 @@ class UserController extends AbstractController
         return $this->render('user/list.html.twig', ['users' => $users]);
     }
 
-    #[Route(path: '/users/create', name: 'user_create')]
+    #[Route(path: '/users/create', name: 'user_create', methods: ['GET', 'POST'])]
     public function createUser(Request $request): Response
     {
         $user = new User();
@@ -50,7 +50,7 @@ class UserController extends AbstractController
     }
 
     #[IsGranted('ROLE_ADMIN')]
-    #[Route(path: '/users/{id}/edit', name: 'user_edit')]
+    #[Route(path: '/users/{id}/edit', name: 'user_edit', methods: ['GET', 'PUT'])]
     public function editUser(User $user, Request $request): Response
     {
         $form = $this->createForm(UserType::class, $user);

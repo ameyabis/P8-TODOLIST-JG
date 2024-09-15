@@ -45,7 +45,7 @@ class TaskControllerTest extends WebTestCase
     public function testCreateTaskNotConnected(): void
     {
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_create'));
-        
+
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
         $this->assertResponseRedirects($this->urlGenerator->generate('app_login'));
     }
@@ -75,7 +75,7 @@ class TaskControllerTest extends WebTestCase
     public function testUpdateTaskNotConnected(): void
     {
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_edit', ['id' => '1']));
-        
+
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
         $this->assertResponseRedirects($this->urlGenerator->generate('app_login'));
     }
@@ -112,7 +112,7 @@ class TaskControllerTest extends WebTestCase
     public function testRemoveTaskNotConnected(): void
     {
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_delete', ['id' => '1']));
-        
+
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
         $this->assertResponseRedirects($this->urlGenerator->generate('app_login'));
     }

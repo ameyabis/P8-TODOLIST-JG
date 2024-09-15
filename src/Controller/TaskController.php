@@ -14,9 +14,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TaskController extends AbstractController
 {
-    public function __construct(private EntityManagerInterface $em,) {}
+    public function __construct(private EntityManagerInterface $em)
+    {
+    }
 
-    #[Route(path: '/tasks', name: 'task_list')]
+    #[Route(path: '/tasks', name: 'task_list', methods: ['GET'])]
     public function listTasks(Request $request): Response
     {
         $done = $request->query->get('done');
@@ -26,7 +28,7 @@ class TaskController extends AbstractController
         return $this->render('task/list.html.twig', ['tasks' => $task]);
     }
 
-    #[Route(path: '/tasks/create', name: 'task_create')]
+    #[Route(path: '/tasks/create', name: 'task_create', methods: ['GET', 'POST'])]
     public function createTask(
         Request $request,
         #[CurrentUser] ?User $currentUser,
@@ -47,7 +49,7 @@ class TaskController extends AbstractController
         return $this->render('task/create.html.twig', ['form' => $form->createView()]);
     }
 
-    #[Route(path: '/tasks/{id}/edit', name: 'task_edit')]
+    #[Route(path: '/tasks/{id}/edit', name: 'task_edit', methods: ['GET', 'POST'])]
     public function editTask(Task $task, Request $request): Response
     {
         $form = $this->createForm(TaskType::class, $task);
@@ -67,7 +69,7 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/tasks/{id}/toggle', name: 'task_toggle')]
+    #[Route(path: '/tasks/{id}/toggle', name: 'task_toggle', methods: ['GET', 'PUT'])]
     public function toggleTask(Task $task): Response
     {
         $task->toggle(!$task->isDone());
@@ -79,7 +81,7 @@ class TaskController extends AbstractController
         return $this->redirectToRoute('task_list', ['done' => !$task->isDone()]);
     }
 
-    #[Route(path: '/tasks/{id}/delete', name: 'task_delete')]
+    #[Route(path: '/tasks/{id}/delete', name: 'task_delete', methods: ['GET', 'DELETE'])]
     public function deleteTask(
         Task $task,
         #[CurrentUser] ?User $currentUser,
