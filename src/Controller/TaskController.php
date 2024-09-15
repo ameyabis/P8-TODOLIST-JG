@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Entity\User;
 use App\Form\TaskType;
-use App\Service\TaskService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,11 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TaskController extends AbstractController
 {
-    public function __construct(
-        private EntityManagerInterface $em,
-        private TaskService $taskService,
-    ) {
-    }
+    public function __construct(private EntityManagerInterface $em,) {}
 
     #[Route(path: '/tasks', name: 'task_list')]
     public function listTasks(Request $request): Response
@@ -42,7 +37,7 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $task->setUser($currentUser);
-            $this->taskService->save($task);
+            $this->em->getRepository(Task::class)->saveTask($task);
 
             $this->addFlash('success', 'La tâche a bien été ajoutée.');
 
@@ -59,7 +54,7 @@ class TaskController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->taskService->save($task);
+            $this->em->getRepository(Task::class)->saveTask($task);
 
             $this->addFlash('success', 'La tâche a bien été modifiée.');
 
@@ -76,7 +71,7 @@ class TaskController extends AbstractController
     public function toggleTask(Task $task): Response
     {
         $task->toggle(!$task->isDone());
-        $this->taskService->save($task);
+        $this->em->getRepository(Task::class)->saveTask($task);
 
         $message = $task->isDone() ? 'faite' : 'à faire';
         $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme %s.', $task->getTitle(), $message));
@@ -90,9 +85,11 @@ class TaskController extends AbstractController
         #[CurrentUser] ?User $currentUser,
     ): Response {
         if ($currentUser === $task->getUser() || (null === $task->getUser() && $this->isGranted('ROLE_ADMIN'))) {
-            $this->taskService->remove($task);
+            $this->em->getRepository(Task::class)->removeTask($task);
 
             $this->addFlash('success', 'La tâche a bien été supprimée.');
+        } elseif ($currentUser !== $task->getUser()) {
+            $this->addFlash('error', 'Vous n\'avez pas les droit nécessaire pour supprimer la tache.');
         }
 
         return $this->redirectToRoute('task_list', ['done' => $task->isDone()]);

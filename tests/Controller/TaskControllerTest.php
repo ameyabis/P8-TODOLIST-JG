@@ -26,12 +26,28 @@ class TaskControllerTest extends WebTestCase
         $this->user = $this->em->find(User::class, 1);
     }
 
+    public function testShowTaskPageNotConnected(): void
+    {
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_list'));
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        $this->assertResponseRedirects($this->urlGenerator->generate('app_login'));
+    }
+
     public function testShowTaskPage(): void
     {
         $this->client->loginUser($this->user);
 
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_list'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+    }
+
+    public function testCreateTaskNotConnected(): void
+    {
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_create'));
+        
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        $this->assertResponseRedirects($this->urlGenerator->generate('app_login'));
     }
 
     public function testCreateTask(): void
@@ -54,6 +70,14 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorTextContains('div.alert-success', 'Superbe ! La tâche a bien été ajoutée.');
 
         $this->assertRouteSame('task_list');
+    }
+
+    public function testUpdateTaskNotConnected(): void
+    {
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_edit', ['id' => '1']));
+        
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        $this->assertResponseRedirects($this->urlGenerator->generate('app_login'));
     }
 
     public function testUpdateTask(): void
@@ -83,6 +107,14 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorTextContains('div.alert-success', 'Superbe ! La tâche a bien été modifiée.');
 
         $this->assertRouteSame('task_list');
+    }
+
+    public function testRemoveTaskNotConnected(): void
+    {
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_delete', ['id' => '1']));
+        
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        $this->assertResponseRedirects($this->urlGenerator->generate('app_login'));
     }
 
     public function testRemoveTask(): void

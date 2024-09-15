@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
-use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +17,6 @@ class UserController extends AbstractController
     public function __construct(
         private EntityManagerInterface $em,
         private UserPasswordHasherInterface $userPasswordHasher,
-        private UserService $userService,
     ) {
     }
 
@@ -31,7 +29,6 @@ class UserController extends AbstractController
         return $this->render('user/list.html.twig', ['users' => $users]);
     }
 
-    #[IsGranted('ROLE_ADMIN')]
     #[Route(path: '/users/create', name: 'user_create')]
     public function createUser(Request $request): Response
     {
@@ -42,7 +39,7 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword($this->userPasswordHasher->hashPassword($user, $user->getPassword()));
 
-            $this->userService->save($user);
+            $this->em->getRepository(User::class)->saveUser($user);
 
             $this->addFlash('success', 'L\'utilisateur a bien été ajouté.');
 
@@ -62,7 +59,7 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword($this->userPasswordHasher->hashPassword($user, $user->getPassword()));
 
-            $this->userService->save($user);
+            $this->em->getRepository(User::class)->saveUser($user);
 
             $this->addFlash('success', 'L\'utilisateur a bien été modifié.');
 
