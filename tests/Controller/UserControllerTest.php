@@ -61,10 +61,28 @@ class UserControllerTest extends WebTestCase
      */
     public function testCreateUserNotConnected(): void
     {
-        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_create'));
+        $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_create'));
+
+        $form = $crawler->filter('form[name=user]')->form([
+            'user[username]' => 'testCreateUnconnected',
+            'user[password][first]' => 'test',
+            'user[password][second]' => 'test',
+            'user[email]' => 'test@testCreateUnconnected.fr',
+        ]);
+
+        $this->client->submit($form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
-        $this->assertResponseRedirects($this->urlGenerator->generate('app_login'));
+
+        $this->client->followRedirect();
+
+        $this->assertRouteSame('user_list');
+
+        $this->client->followRedirect();
+
+        $this->assertSelectorTextContains('div.alert-success', 'Superbe ! L\'utilisateur a bien été ajouté.');
+
+        $this->assertRouteSame('app_login');
     }
 
     public function testCreateUserConnectedUserRole(): void
@@ -73,21 +91,26 @@ class UserControllerTest extends WebTestCase
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'user']);
         $this->client->loginUser($user);
 
-        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_create'));
+        $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_create'));
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $form = $crawler->filter('form[name=user]')->form([
+            'user[username]' => 'testCreateUser',
+            'user[password][first]' => 'test',
+            'user[password][second]' => 'test',
+            'user[email]' => 'test@testCreateUser.fr',
+        ]);
+
+        $this->client->submit($form);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+
+        $this->client->followRedirect();
+
+        $this->assertRouteSame('user_list');
     }
 
     public function testCreateUserConnectedAdminRole(): void
     {
-        $user = $this->client->getContainer()->get('doctrine')->getRepository(User::class)->findOneBy(
-            ['username' => 'testCreate']
-        );
-        if ($user) {
-            $this->client->getContainer()->get('doctrine')->getManager()->remove($user);
-            $this->client->getContainer()->get('doctrine')->getManager()->flush();
-        }
-
         // User is an admin
         $admin = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
         $this->client->loginUser($admin);
@@ -112,12 +135,48 @@ class UserControllerTest extends WebTestCase
         $this->assertRouteSame('user_list');
     }
 
+    public function testCreateUserConnectedUniqueUsername(): void
+    {
+        $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_create'));
+
+        $form = $crawler->filter('form[name=user]')->form([
+            'user[username]' => 'user',
+            'user[password][first]' => 'test',
+            'user[password][second]' => 'test',
+            'user[email]' => 'test@testCreate3333Unconnected.fr',
+        ]);
+
+        $this->client->submit($form);
+
+        $this->assertSelectorTextContains('li', 'There is already an account with this username');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+    }
+
+    public function testCreateUserConnectedEmail(): void
+    {
+        $crawler = $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_create'));
+
+        $form = $crawler->filter('form[name=user]')->form([
+            'user[username]' => 'userNew',
+            'user[password][first]' => 'test',
+            'user[password][second]' => 'test',
+            'user[email]' => 'test@testCreateUser.fr',
+        ]);
+
+        $this->client->submit($form);
+
+        $this->assertSelectorTextContains('li', 'There is already an account with this email');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+    }
+
     /**
      * Test edit user.
      */
     public function testEditUser(): void
     {
-        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_create'));
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_edit', ['id' => 1]));
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
         $this->assertResponseRedirects($this->urlGenerator->generate('app_login'));

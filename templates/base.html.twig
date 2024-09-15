@@ -30,9 +30,7 @@
     <!-- Page Content -->
     <div class="container">
         <div class="d-flex justify-content-end">
-            {% if is_granted('ROLE_ADMIN') %}
             <a href="{{ path('user_create') }}" class="m-1 btn btn-primary">Créer un utilisateur</a>
-            {% endif %}
 
             {% if app.user %}
             <a href="{{ path('app_logout') }}" class="m-1 btn btn-danger">Se déconnecter</a>
