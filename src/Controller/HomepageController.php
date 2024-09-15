@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class HomepageController extends AbstractController
 {
-    #[Route(path: '/', name: 'homepage')]
+    #[Route(path: '/', name: 'homepage', methods: ['GET'])]
     public function showHomepage(): Response
     {
         return $this->render('homepage/index.html.twig');

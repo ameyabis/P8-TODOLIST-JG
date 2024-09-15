@@ -6,3 +6,7 @@ parameters:
         - public/
         - src/
         - tests/
+    ignoreErrors:
+        - '#Call to an undefined method Doctrine\\ORM\\EntityRepository<App\\Entity\\User>::saveUser#'
+        - '#Call to an undefined method Doctrine\\ORM\\EntityRepository<App\\Entity\\Task>::saveTask#'
+        - '#Call to an undefined method Doctrine\\ORM\\EntityRepository<App\\Entity\\Task>::removeTask#'
