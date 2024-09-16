@@ -148,7 +148,7 @@ class UserControllerTest extends WebTestCase
 
         $this->client->submit($form);
 
-        $this->assertSelectorTextContains('li', 'There is already an account with this username');
+        $this->assertSelectorTextContains('li', 'Il existe déjà un compte avec ce nom d\'utilisateur.');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
@@ -166,7 +166,7 @@ class UserControllerTest extends WebTestCase
 
         $this->client->submit($form);
 
-        $this->assertSelectorTextContains('li', 'There is already an account with this email');
+        $this->assertSelectorTextContains('li', 'Il existe déjà un compte avec cette adresse email.');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
